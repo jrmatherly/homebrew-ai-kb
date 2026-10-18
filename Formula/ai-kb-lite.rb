@@ -1,0 +1,117 @@
+class AiKbLite < Formula
+  desc "Knowledge base management system, single-binary Lite edition"
+  homepage "https://github.com/jrmatherly/ai-kb"
+  version "2026.10.17.1"
+  license "MIT"
+
+  on_macos do
+    on_arm do
+      url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_darwin_arm64.tar.gz"
+      sha256 "3e47520bff94681936e07b50c30a3cc7d75339868445ea627c8ceaf44a7be0a9"
+    end
+    on_intel do
+      url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_darwin_amd64.tar.gz"
+      sha256 "06fa8c9afd75dbd0df7af2b536ce8849e922206dd668b9f2d8e000dfbb8b7f0c"
+    end
+  end
+
+  on_linux do
+    on_arm do
+      url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_linux_arm64.tar.gz"
+      sha256 "ff4bb036dc782f1be94073d3391eebcec5be6f5c99c919d4bbd78c6be5f924c9"
+    end
+    on_intel do
+      url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_linux_amd64.tar.gz"
+      sha256 "b6122a8c14fe6fa5abe95905398e5cf5da3b043aa93bf493f9a199b6415c9ad5"
+    end
+  end
+
+  def install
+    libexec.install "ai-kb-lite"
+    pkgshare.install "web" if File.directory?("web")
+    pkgshare.install "config" if File.directory?("config")
+    pkgshare.install ".env.lite.example"
+    doc.install "README.md"
+    pkgshare.install "migrations" if File.directory?("migrations")
+
+    (bin/"ai-kb-lite").write <<~SH
+      #!/bin/bash
+      CONFIG_DIR="${AIKB_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/aikb}"
+      DATA_DIR="${AIKB_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/aikb}"
+
+      mkdir -p "$DATA_DIR/files" "$CONFIG_DIR/config" 2>/dev/null
+
+      if [ ! -f "$CONFIG_DIR/config/config.yaml" ]; then
+        cp -r "#{pkgshare}/config/" "$CONFIG_DIR/config/"
+      fi
+
+      if [ ! -d "$CONFIG_DIR/migrations" ] && [ -d "#{pkgshare}/migrations" ]; then
+        ln -sf "#{pkgshare}/migrations" "$CONFIG_DIR/migrations"
+      fi
+
+      if [ ! -f "$CONFIG_DIR/.env.lite" ]; then
+        cp "#{pkgshare}/.env.lite.example" "$CONFIG_DIR/.env.lite"
+        sed -i.bak -e "s|DB_PATH=.*|DB_PATH=$DATA_DIR/aikb.db|" -e "s|LOCAL_STORAGE_BASE_DIR=.*|LOCAL_STORAGE_BASE_DIR=$DATA_DIR/files|" "$CONFIG_DIR/.env.lite"
+        rm -f "$CONFIG_DIR/.env.lite.bak"
+        echo ""
+        echo "Created config file: $CONFIG_DIR/.env.lite"
+        echo "Edit it as needed (for example the LLM endpoint or the secret keys)."
+        echo ""
+      fi
+
+      set -a
+      source "$CONFIG_DIR/.env.lite"
+      set +a
+
+      export DB_PATH="${DB_PATH:-$DATA_DIR/aikb.db}"
+      export LOCAL_STORAGE_BASE_DIR="${LOCAL_STORAGE_BASE_DIR:-$DATA_DIR/files}"
+      export AIKB_WEB_DIR="${AIKB_WEB_DIR:-#{pkgshare}/web}"
+
+      cd "$CONFIG_DIR"
+      exec "#{libexec}/ai-kb-lite" "$@"
+    SH
+  end
+
+  def post_install
+    (var/"aikb").mkpath
+    (var/"log").mkpath
+  end
+
+  service do
+    run [bin/"ai-kb-lite"]
+    keep_alive true
+    working_dir var/"aikb"
+    log_path var/"log/ai-kb-lite.log"
+    error_log_path var/"log/ai-kb-lite.log"
+  end
+
+  def caveats
+    <<~EOS
+      Run in the foreground:
+        ai-kb-lite
+
+      Background service (recommended):
+        brew services start ai-kb-lite   # start now and at login
+        brew services stop ai-kb-lite    # stop
+        brew services restart ai-kb-lite # restart
+        brew services info ai-kb-lite    # show status
+
+      Logs:
+        #{var}/log/ai-kb-lite.log
+
+      The first run creates the config file:
+        ~/.config/aikb/.env.lite
+
+      Data is stored in:
+        ~/.local/share/aikb/
+
+      To change the config (LLM endpoint, secret keys and so on):
+        $EDITOR ~/.config/aikb/.env.lite
+        brew services restart ai-kb-lite
+    EOS
+  end
+
+  test do
+    assert_predicate bin/"ai-kb-lite", :executable?
+  end
+end
