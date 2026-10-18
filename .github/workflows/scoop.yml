@@ -1,0 +1,63 @@
+name: 🪣 Scoop bucket
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "bucket/**"
+      - ".github/workflows/scoop.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  scoop:
+    name: 🪟 Install aikb from this bucket
+    runs-on: windows-latest
+    timeout-minutes: 15
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: 🪣 Install Scoop
+        shell: pwsh
+        run: |
+          Invoke-RestMethod -Uri https://get.scoop.sh -OutFile install-scoop.ps1
+          .\install-scoop.ps1 -RunAsAdmin
+          "$env:USERPROFILE\scoop\shims" | Out-File -FilePath $env:GITHUB_PATH -Append
+
+      - name: 🔎 Validate the manifest
+        shell: pwsh
+        run: |
+          $manifest = Get-Content bucket\aikb.json -Raw | ConvertFrom-Json
+          foreach ($arch in "64bit", "arm64") {
+            $entry = $manifest.architecture.$arch
+            if ($entry.url -notmatch "/releases/download/v$([regex]::Escape($manifest.version))/aikb_v$([regex]::Escape($manifest.version))_windows_") {
+              throw "$arch url does not match version $($manifest.version): $($entry.url)"
+            }
+            if ($entry.hash -notmatch '^[0-9a-f]{64}$') { throw "$arch hash is not a sha256" }
+          }
+          # checkver reads the GitHub releases page and reports the newest v* tag.
+          & "$(scoop prefix scoop)\bin\checkver.ps1" aikb -Dir bucket
+
+      # The manifest ships with zero hashes until the first aikb release run
+      # fills them, so the install proof waits for real hashes.
+      - name: 📦 Install and run aikb
+        shell: pwsh
+        run: |
+          $manifest = Get-Content bucket\aikb.json -Raw | ConvertFrom-Json
+          if ($manifest.architecture."64bit".hash -eq ("0" * 64)) {
+            Write-Host "::notice::placeholder hashes; install skipped until the first aikb release"
+            exit 0
+          }
+          scoop bucket add ai-kb "$env:GITHUB_WORKSPACE"
+          scoop install ai-kb/aikb
+          aikb --version
+          scoop uninstall aikb
