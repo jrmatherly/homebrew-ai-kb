@@ -20,10 +20,10 @@
   "autoupdate": {
     "architecture": {
       "64bit": {
-        "url": "https://github.com/jrmatherly/ai-kb/releases/download/v$version/aikb_v${version}_windows_amd64.zip"
+        "url": "https://github.com/jrmatherly/ai-kb/releases/download/v$version/aikb_v$version_windows_amd64.zip"
       },
       "arm64": {
-        "url": "https://github.com/jrmatherly/ai-kb/releases/download/v$version/aikb_v${version}_windows_arm64.zip"
+        "url": "https://github.com/jrmatherly/ai-kb/releases/download/v$version/aikb_v$version_windows_arm64.zip"
       }
     },
     "hash": {

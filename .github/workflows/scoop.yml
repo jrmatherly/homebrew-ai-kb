@@ -44,8 +44,9 @@ jobs:
             }
             if ($entry.hash -notmatch '^[0-9a-f]{64}$') { throw "$arch hash is not a sha256" }
           }
-          # checkver reads the GitHub releases page and reports the newest v* tag.
-          & "$(scoop prefix scoop)\bin\checkver.ps1" aikb -Dir bucket
+          # checkver reads the GitHub releases page and reports the newest v* tag;
+          # without -ThrowError it only prints problems.
+          & "$(scoop prefix scoop)\bin\checkver.ps1" aikb -Dir bucket -ThrowError
 
       # The manifest ships with zero hashes until the first aikb release run
       # fills them, so the install proof waits for real hashes.
@@ -57,7 +58,8 @@ jobs:
             Write-Host "::notice::placeholder hashes; install skipped until the first aikb release"
             exit 0
           }
-          scoop bucket add ai-kb "$env:GITHUB_WORKSPACE"
+          # Scoop accepts a local path as a bucket only with forward slashes.
+          scoop bucket add ai-kb ($env:GITHUB_WORKSPACE -replace '\\', '/')
           scoop install ai-kb/aikb
           aikb --version
           scoop uninstall aikb
