@@ -1,16 +1,16 @@
 {
-  "version": "2026.10.21",
+  "version": "2026.10.21.1",
   "description": "Command-line client for AI KB knowledge bases, built for agents",
   "homepage": "https://ai-kb.matherly.net/docs/05-clients/02-cli",
   "license": "MIT",
   "architecture": {
     "64bit": {
-      "url": "https://github.com/jrmatherly/ai-kb/releases/download/v2026.10.21/aikb_v2026.10.21_windows_amd64.zip",
-      "hash": "efb411b89c1bd6ae3a56341659ef5ea84b8429352674a7a5f069fbe35b26cecc"
+      "url": "https://github.com/jrmatherly/ai-kb/releases/download/v2026.10.21.1/aikb_v2026.10.21.1_windows_amd64.zip",
+      "hash": "25367f707aa72fe55e1b63aa3516ac36d21816f28d463094035532c07cc9cd0d"
     },
     "arm64": {
-      "url": "https://github.com/jrmatherly/ai-kb/releases/download/v2026.10.21/aikb_v2026.10.21_windows_arm64.zip",
-      "hash": "7d77e30a02fde3b9735fa3b11feca9085dd77a6468d9cfc01412f0a816251505"
+      "url": "https://github.com/jrmatherly/ai-kb/releases/download/v2026.10.21.1/aikb_v2026.10.21.1_windows_arm64.zip",
+      "hash": "baf8feaa9fa19638a4a52b5406530dd2e35e5f5c67c968466032cc241a9e4311"
     }
   },
   "bin": "aikb.exe",
