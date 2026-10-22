@@ -1,28 +1,28 @@
 class Aikb < Formula
   desc "Command-line client for AI KB knowledge bases, built for agents"
   homepage "https://ai-kb.matherly.net/docs/05-clients/02-cli"
-  version "2026.10.22"
+  version "2026.10.22.1"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/aikb_v#{version}_darwin_arm64.tar.gz"
-      sha256 "e37b605eeb6ab7d0b280342caaf6df4bec49800f38e32ad189b583b7527f7921"
+      sha256 "68d4e9e679635e6cd256bf52679dff0198cc73f4a16886761c05ce7387ea65bb"
     end
     on_intel do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/aikb_v#{version}_darwin_amd64.tar.gz"
-      sha256 "9488f486a5ee437923c4eb7fb20243e46cc911885a91236f843283a3487a633f"
+      sha256 "3b8d503cd9d02929f0f8d1cdfa8b8dc3f174bd60d7effb1d056dbf50b1edc27e"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/aikb_v#{version}_linux_arm64.tar.gz"
-      sha256 "bd1114fad83ff1fc347a90209b3f2979fc819e4ca1359bfb435e2017c4621b01"
+      sha256 "abeaf9fdc18bb74c58a86dd6b4f3cc479cb7a7330f90fb6581fe455418a241bd"
     end
     on_intel do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/aikb_v#{version}_linux_amd64.tar.gz"
-      sha256 "5ba8a6a713095a9e066437cf2dce5a0cddcfbed3917faefc5da7c28c99c125a7"
+      sha256 "59a18dcfa80ebe812d2e0dfe4748fc9e5b92a15e559d4b47c14696f76c67a5d0"
     end
   end
 
