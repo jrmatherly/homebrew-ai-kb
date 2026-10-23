@@ -75,13 +75,8 @@ class AiKbLite < Formula
     SH
   end
 
-  def post_install
-    (var/"aikb").mkpath
-    (var/"log").mkpath
-  end
-
   service do
-    run [bin/"ai-kb-lite"]
+    run [opt_bin/"ai-kb-lite"]
     keep_alive true
     working_dir var/"aikb"
     log_path var/"log/ai-kb-lite.log"
