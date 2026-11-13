@@ -1,28 +1,28 @@
 class AiKbLite < Formula
   desc "Knowledge base management system, single-binary Lite edition"
   homepage "https://github.com/jrmatherly/ai-kb"
-  version "2026.10.23"
+  version "2026.11.13"
   license "MIT"
 
   on_macos do
     on_arm do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_darwin_arm64.tar.gz"
-      sha256 "7f7eb0faa37d97a6ee9781331d168aae50cdaab92e42ea806276b0fad53a93e3"
+      sha256 "bd00155c4bbc25f2fba243b88c6950ed3e239462fcf88ad361068e7a122a3350"
     end
     on_intel do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_darwin_amd64.tar.gz"
-      sha256 "189d49a2132181e4207969075de3aea27c2dbb9e6e87f76dbf19ccfb515541fd"
+      sha256 "80a348fe44d42325fcb5591372e86ff23642ce5f36283f3427c8810e6964a656"
     end
   end
 
   on_linux do
     on_arm do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_linux_arm64.tar.gz"
-      sha256 "8483a58e2744a08546b224eb818a58699d16d563c82533fce59c8f6241f7b48d"
+      sha256 "40c34969b749021b76c0f9208b00a73efb7cc5f02b270a04dbc310c91a039220"
     end
     on_intel do
       url "https://github.com/jrmatherly/ai-kb/releases/download/v#{version}/ai-kb-lite_v#{version}_linux_amd64.tar.gz"
-      sha256 "6eeb712bfb4627881bd8061d35a4872746a96644f47de06d3b8fae8e2f84e464"
+      sha256 "02ab116d69df32271db1510789f129713537a98a7075778d6a9d8aaf3a905367"
     end
   end
 
